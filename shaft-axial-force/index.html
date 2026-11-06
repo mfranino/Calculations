@@ -13,6 +13,22 @@ body{font:16px system-ui,Arial;background:#f3f6fa;color:#162338;margin:0;padding
 <section><h2>Export</h2><button id="csv">Export CSV</button><button id="share">Copy shareable link</button><button id="reset" class="secondary">Reset inputs</button><p id="notice" class="note"></p></section>
 <section><h2>Engineering assumptions</h2><p>Uniform elastic uniaxial shaft stress, isotropic material, correctly wired four-active-gauge full bridge with axial and transverse gauges at diametrically opposite locations. Ideal bridge response: |Vout/Vexc| ≈ GF(1+ν)|ε|/2. The sign depends on bridge wiring.</p><p>Shunt calibration verifies electrical response, not mechanical force sensitivity. For turbine use, verify mechanical calibration, bending/torsion rejection, temperature compensation, telemetry bandwidth and time synchronization. Axial load at the instrumented shaft section is not necessarily identical to hydraulic runner thrust.</p></section>
 
+<section id="measurement-axial-force">
+<h2>Measurement of axial force using strain gauges</h2>
+<p>Axial force can be measured using strain gauges bonded to a structural component that carries the axial load. The gauges measure the elastic deformation of the material, which can then be converted into force.</p>
+<p>For hydropower applications, this method can be used to measure axial thrust transmitted through a turbine shaft, thrust-bearing support, or another load-carrying component.</p>
+<h3>1. Measurement principle</h3>
+<p>For a component subjected to pure axial force:</p>
+<div class="equation"><div class="formula"><i>σ</i> = <span style="display:inline-block;vertical-align:middle;text-align:center"><span style="display:block;border-bottom:1px solid;padding:0 8px"><i>F</i></span><span style="display:block"><i>A</i></span></span></div><span class="eqno">(8)</span></div>
+<p>Using Hooke's law:</p>
+<div class="equation"><div class="formula"><i>ε</i> = <span style="display:inline-block;vertical-align:middle;text-align:center"><span style="display:block;border-bottom:1px solid;padding:0 8px"><i>σ</i></span><span style="display:block"><i>E</i></span></span></div><span class="eqno">(9)</span></div>
+<p>Therefore:</p>
+<div class="equation"><div class="formula" style="border:1.5px solid #455a70;padding:7px 16px;justify-self:center"><i>F</i> = <i>E A ε</i></div><span class="eqno">(10)</span></div>
+<p>Where:</p>
+<ul><li><i>F</i> — axial force [N]</li><li><i>E</i> — Young's modulus [Pa]</li><li><i>A</i> — effective cross-sectional area [m²]</li><li><i>ε</i> — measured axial strain [m/m]</li></ul>
+<p>For steel, Young's modulus is typically around 200–210 GPa.</p>
+<p>The main challenge is that strain gauges measure local strain, not force directly. The relationship between measured strain and axial force depends on the component geometry, load distribution, bending, temperature, and mounting position.</p>
+</section>
 <section id="theory"><h2>Theory and measurement principles</h2>
 <p>The measurement is based on linear elastic strain in a shaft subjected to an axial force. The following equations use the ideal uniaxial-stress approximation and a four-active-gauge full Wheatstone bridge. Equation numbers follow scientific-paper conventions.</p>
 <h3>Governing equations</h3>
