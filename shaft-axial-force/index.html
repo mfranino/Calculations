@@ -1,11 +1,63 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shaft Axial Force Calculator</title><style>
-body{font:16px system-ui,Arial;background:#f3f6fa;color:#162338;margin:0;padding:24px}main{max-width:980px;margin:auto}h1{margin-bottom:4px}.sub,.note{color:#58677a}section{background:white;padding:24px;margin:18px 0;border-radius:14px;box-shadow:0 2px 10px #13233812}.fields,.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:15px}label{font-size:14px;font-weight:600}input{box-sizing:border-box;width:100%;margin-top:7px;padding:10px;border:1px solid #b5c2d0;border-radius:7px;font:inherit}.result{background:#eef4fa;padding:15px;border-radius:9px}.result strong{display:block;font-size:22px;margin-top:8px;overflow-wrap:anywhere}button{background:#155a95;color:white;border:0;border-radius:8px;padding:12px 16px;cursor:pointer;margin:5px}button.secondary{background:#475569}.error{color:#b91c1c}</style></head><body><main>
+body{font:16px system-ui,Arial;background:#f3f6fa;color:#162338;margin:0;padding:24px}main{max-width:980px;margin:auto}h1{margin-bottom:4px}.sub,.note{color:#58677a}figure{margin:18px 0;padding:14px;border:1px solid #dce5ed;border-radius:12px;overflow:hidden}figcaption{color:#526277;font-size:13px;margin-top:10px}section p,section li{line-height:1.6}section{background:white;padding:24px;margin:18px 0;border-radius:14px;box-shadow:0 2px 10px #13233812}.fields,.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:15px}label{font-size:14px;font-weight:600}input{box-sizing:border-box;width:100%;margin-top:7px;padding:10px;border:1px solid #b5c2d0;border-radius:7px;font:inherit}.result{background:#eef4fa;padding:15px;border-radius:9px}.result strong{display:block;font-size:22px;margin-top:8px;overflow-wrap:anywhere}button{background:#155a95;color:white;border:0;border-radius:8px;padding:12px 16px;cursor:pointer;margin:5px}button.secondary{background:#475569}.error{color:#b91c1c}</style></head><body><main>
 <h1>Shaft axial-force calculator</h1><p class="sub">Four-active-gauge axial full bridge · Solid or hollow rotating shaft · Inputs saved in your browser</p>
 <section><h2>Parameters</h2><div class="fields" id="fields"></div><p class="note">All inputs are saved automatically in browser local storage. Shareable URLs contain the input values.</p></section>
 <section><h2>Results</h2><p id="error" class="error"></p><div class="results" id="results"></div></section>
 <section><h2>Export</h2><button id="csv">Export CSV</button><button id="share">Copy shareable link</button><button id="reset" class="secondary">Reset inputs</button><p id="notice" class="note"></p></section>
 <section><h2>Engineering assumptions</h2><p>Uniform elastic uniaxial shaft stress, isotropic material, correctly wired four-active-gauge full bridge with axial and transverse gauges at diametrically opposite locations. Ideal bridge response: |Vout/Vexc| ≈ GF(1+ν)|ε|/2. The sign depends on bridge wiring.</p><p>Shunt calibration verifies electrical response, not mechanical force sensitivity. For turbine use, verify mechanical calibration, bending/torsion rejection, temperature compensation, telemetry bandwidth and time synchronization. Axial load at the instrumented shaft section is not necessarily identical to hydraulic runner thrust.</p></section>
-</main><script>
+
+<section id="theory"><h2>Theory and measurement principles</h2>
+<p>A bonded resistance strain gauge measures the local deformation of the shaft. For a straight shaft under uniform axial load, stress is σ = F/A and axial strain is ε = σ/E. A hollow shaft has area A = π(Dₒ² − Dᵢ²)/4. The gauge's fractional resistance change is ΔR/R ≈ GF·ε, where GF is the gauge factor.</p>
+<p>The shaft load is not necessarily equal to hydraulic thrust on the runner: the measured force depends on the location relative to thrust-bearing and other load paths. These equations are an ideal first estimate, not a substitute for mechanical calibration.</p>
+<h3>1. Shaft installation — longitudinal and transverse gauges</h3>
+<figure><svg viewBox="0 0 760 350" role="img" aria-label="Rotating shaft with two diametrically opposed strain-gauge stations and wireless telemetry" style="width:100%;height:auto">
+<defs><linearGradient id="steel" x2="1" y2="0"><stop stop-color="#8c9fae"/><stop offset=".45" stop-color="#e4edf4"/><stop offset="1" stop-color="#8195a6"/></linearGradient></defs>
+<rect x="258" y="35" width="240" height="260" rx="12" fill="url(#steel)" stroke="#455a70" stroke-width="3"/>
+<ellipse cx="378" cy="35" rx="120" ry="21" fill="#d9e4ed" stroke="#455a70" stroke-width="3"/>
+<ellipse cx="378" cy="295" rx="120" ry="21" fill="#b6c5d1" stroke="#455a70" stroke-width="3"/>
+<path d="M378 5 V55 M370 18 L378 5 L386 18" stroke="#155a95" stroke-width="4" fill="none"/>
+<text x="400" y="19" font-size="18" fill="#155a95">Fz</text>
+<g stroke="#7b4b17" fill="#f4bc67" stroke-width="2"><rect x="272" y="128" width="27" height="58" rx="3"/><rect x="457" y="128" width="27" height="58" rx="3"/></g>
+<g stroke="#7b4b17" stroke-width="2"><path d="M280 139 H291 M280 147 H291 M280 155 H291 M280 163 H291 M280 171 H291 M465 139 H476 M465 147 H476 M465 155 H476 M465 163 H476 M465 171 H476"/></g>
+<rect x="336" y="92" width="85" height="33" rx="7" fill="#155a95"/><text x="378" y="113" font-size="13" fill="white" text-anchor="middle">Telemetry</text>
+<path d="M272 157 H160 V122 H24 M484 157 H599 V122 H730" stroke="#31465b" fill="none" stroke-width="2"/>
+<text x="24" y="108" font-size="16">Station A</text><text x="24" y="144" font-size="13">0° / 90° gauges</text>
+<text x="610" y="108" font-size="16">Station B</text><text x="610" y="144" font-size="13">180° opposite</text>
+<text x="378" y="338" text-anchor="middle" font-size="15" fill="#42576c">Schematic: gauge stations at one axial section (not to scale)</text>
+</svg><figcaption>Conceptual installation: two axial and two circumferential gauges, symmetrically placed. Use a straight constant-section region away from stress concentrations, and verify clearance, bonding and rotating balance.</figcaption></figure>
+<h3>2. Shaft cross-section — opposing stations</h3>
+<figure><svg viewBox="0 0 760 300" role="img" aria-label="Hollow shaft cross-section with gauge stations 180 degrees apart" style="width:100%;height:auto">
+<circle cx="270" cy="146" r="112" fill="#c8d6e2" stroke="#455a70" stroke-width="3"/><circle cx="270" cy="146" r="60" fill="white" stroke="#455a70" stroke-width="3"/>
+<path d="M270 20 V272 M145 146 H395" stroke="#94a3b8" stroke-dasharray="5 6"/>
+<rect x="259" y="29" width="22" height="35" rx="3" fill="#f4bc67" stroke="#7b4b17" stroke-width="2"/>
+<rect x="259" y="228" width="22" height="35" rx="3" fill="#f4bc67" stroke="#7b4b17" stroke-width="2"/>
+<path d="M283 46 H430" stroke="#334155" stroke-width="2"/><text x="441" y="44" font-size="17">Station A: 0°</text>
+<path d="M283 246 H430" stroke="#334155" stroke-width="2"/><text x="441" y="244" font-size="17">Station B: 180°</text>
+<text x="270" y="148" text-anchor="middle" font-size="17" fill="#455a70">Bore</text>
+</svg><figcaption>Each station contains an axial and a transverse gauge. The opposing arrangement reduces first-order bending sensitivity when gauge properties and placement are matched.</figcaption></figure>
+<h3>3. Full Wheatstone bridge wiring</h3>
+<figure><svg viewBox="0 0 760 370" role="img" aria-label="Full Wheatstone bridge schematic showing axial and transverse strain gauges" style="width:100%;height:auto">
+<path d="M380 42 L560 170 L380 298 L200 170 Z" fill="none" stroke="#334155" stroke-width="3"/>
+<g fill="#fff1d8" stroke="#9a651c" stroke-width="2"><rect x="248" y="76" width="84" height="34" rx="4" transform="rotate(-35 290 93)"/><rect x="428" y="76" width="84" height="34" rx="4" transform="rotate(35 470 93)"/><rect x="248" y="230" width="84" height="34" rx="4" transform="rotate(35 290 247)"/><rect x="428" y="230" width="84" height="34" rx="4" transform="rotate(-35 470 247)"/></g>
+<g fill="#26384a" font-size="15" text-anchor="middle"><text x="258" y="62">R1 · transverse A</text><text x="502" y="62">R4 · axial B</text><text x="252" y="292">R2 · axial A</text><text x="506" y="292">R3 · transverse B</text></g>
+<g fill="#155a95"><circle cx="380" cy="42" r="6"/><circle cx="380" cy="298" r="6"/><circle cx="200" cy="170" r="6"/><circle cx="560" cy="170" r="6"/></g>
+<g fill="#155a95" font-size="17"><text x="394" y="32">EX+</text><text x="394" y="326">EX−</text><text x="124" y="174">AI−</text><text x="578" y="174">AI+</text></g>
+<text x="380" y="171" font-size="19" text-anchor="middle" fill="#334155">4 active gauges</text>
+</svg><figcaption>Bridge arm assignment: R1 transverse A, R2 axial A, R3 transverse B, R4 axial B. Check polarity with a known applied load. The ideal output magnitude is |Vout/Vexc| ≈ GF(1+ν)|ε|/2.</figcaption></figure>
+<h3>4. Measurement chain</h3>
+<figure><svg viewBox="0 0 760 170" role="img" aria-label="Block diagram of rotating strain gauges telemetry receiver and data acquisition" style="width:100%;height:auto">
+<g fill="#e9f1f8" stroke="#7794ac" stroke-width="2"><rect x="10" y="44" width="152" height="72" rx="9"/><rect x="208" y="44" width="152" height="72" rx="9"/><rect x="406" y="44" width="152" height="72" rx="9"/><rect x="604" y="44" width="146" height="72" rx="9"/></g>
+<g text-anchor="middle" font-size="16" fill="#26384a"><text x="86" y="74">Strain gauges</text><text x="86" y="94" font-size="13">Full bridge</text><text x="284" y="74">Rotating ADC</text><text x="284" y="94" font-size="13">+ telemetry</text><text x="482" y="74">Receiver</text><text x="482" y="94" font-size="13">DC-coupled</text><text x="677" y="74">DAQ / PC</text><text x="677" y="94" font-size="13">Force &amp; FFT</text></g>
+<g stroke="#155a95" stroke-width="3" fill="none"><path d="M162 80 H208 M198 73 L208 80 L198 87 M360 80 H406 M396 73 L406 80 L396 87 M558 80 H604 M594 73 L604 80 L594 87"/></g>
+<text x="380" y="149" text-anchor="middle" font-size="14" fill="#42576c">Synchronize shaft angle, speed, pressure and vibration when comparing dynamic signals</text>
+</svg><figcaption>DC-coupled telemetry is essential to retain mean axial force. A receiver that only outputs AC-coupled data cannot measure the static component.</figcaption></figure>
+<h3>5. Static and dynamic force</h3>
+<p>Write F(t) = F̄ + F′(t). Determine the static component using a defined averaging interval or low-pass filter, and analyze the dynamic component using time traces, FFT, RMS, peak-to-peak and rotational orders. For a nominal 125 rpm shaft, 1× = 2.083 Hz, 9× = 18.75 Hz and 24× = 50 Hz. These are reference frequencies, not necessarily measured force peaks.</p>
+<h3>6. Calibration and uncertainty</h3>
+<ol><li>Inspect the gauge bonds and measure bridge and insulation resistance.</li><li>Check excitation, bridge polarity, zero output and shunt calibration. Shunt calibration checks the electrical chain only.</li><li>Where practical, apply known axial loads over the intended range in increasing and decreasing sequences; fit force against bridge output.</li><li>Measure zero drift and sensitivity versus shaft temperature.</li><li>Verify dynamic gain, phase, sampling, anti-aliasing, telemetry latency and packet loss over the required frequency range.</li><li>Assess residual sensitivity to bending, torsion, gauge alignment, elastic modulus, geometry, and calibration uncertainty.</li></ol>
+<p><strong>Typical preliminary DAQ targets:</strong> DC–500 Hz bandwidth, ≥5 kS/s sampling (10 kS/s preferred), bridge excitation around 2.5–5 V subject to gauge specifications, and simultaneous temperature and speed acquisition. Final values must be selected from the actual force spectrum and accuracy requirements.</p>
+<h3>7. Technical references</h3><p><a href="https://www.ni.com/en/shop/data-acquisition/sensor-fundamentals/measuring-strain-with-strain-gages.html" target="_blank" rel="noopener">NI — Measuring strain with strain gauges</a> · <a href="https://www.hbm.com/fileadmin/mediapool/hbmdoc/technical/T01569.pdf" target="_blank" rel="noopener">HBK — Wheatstone bridge application</a> · <a href="https://www.iso.org/standard/44661.html" target="_blank" rel="noopener">ISO 376:2011 (force-proving instruments)</a>. ISO 376 is not a dynamic turbine-thrust measurement procedure.</p>
+</section></main><script>
 const specs=[["outer","Outer diameter","mm",500],["inner","Inner diameter","mm",200],["force","Axial force","kN",1000],["E","Young's modulus","GPa",210],["nu","Poisson's ratio","",0.3],["gf","Gauge factor","",2],["exc","Bridge excitation","V",5],["measured","Measured bridge output","mV/V",0]];
 const defaults=Object.fromEntries(specs.map(x=>[x[0],x[3]]));let state={...defaults};try{state={...state,...JSON.parse(localStorage.getItem("shaftAxialForce.v1")||"{}")}}catch(e){}
 const params=new URLSearchParams(location.search);for(const [k] of specs)if(params.has(k)&&Number.isFinite(Number(params.get(k))))state[k]=Number(params.get(k));
